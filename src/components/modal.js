@@ -13,16 +13,14 @@ function closeModal(item){
 
 function overlayClose(evt){
     if (evt.target === evt.currentTarget) {
-    closeModal(document.querySelector('.popup_is-opened'));
+    closeModal(evt.currentTarget);
    }
 };
 
 function escClose(evt){ 
-        if(evt.key === 'Escape' || evt.key === '27'){
+        if(evt.key === 'Escape'){
         closeModal(document.querySelector('.popup_is-opened'));
         }
 };
-
-
 
 export {openModal, closeModal};

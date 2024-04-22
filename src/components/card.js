@@ -1,6 +1,4 @@
-import {openModal} from "./modal";
-import {cardTemplate, cardsContainer, popupImage} from "../index.js";
-
+import {cardTemplate, cardsContainer, popupImage, showImage} from "../index.js";
 
 function createCard(card, deleteCard, setLike, showImage){
     const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
@@ -28,12 +26,5 @@ function createCard(card, deleteCard, setLike, showImage){
     item.classList.toggle('card__like-button_is-active');
   };
   
-  function showImage(card){
-    document.querySelector('.popup__image').src = card.link;
-    document.querySelector('.popup__image').alt = card.name;
-    document.querySelector('.popup__caption').textContent = card.name;
-    openModal(popupImage);
-  }
-  
 
-  export {createCard, deleteCard, setLike, showImage};
+  export {createCard, deleteCard, setLike};
