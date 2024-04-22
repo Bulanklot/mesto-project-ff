@@ -1,33 +1,25 @@
 function openModal(item){
     item.classList.add('popup_is-opened');
-    document.addEventListener('click', () => {
-        overlayClose(item);
-    });
-
-    document.addEventListener('keydown', () => {
-        escClose(item);
-    });
+    item.classList.add('popup_is-animated');
+    item.addEventListener('click', overlayClose);
+    document.addEventListener('keydown', escClose);
 };
-
-
 
 function closeModal(item){  
     item.classList.remove('popup_is-opened');
-        document.removeEventListener('click', () => overlayClose(item));
-        document.removeEventListener('keydown',() => escClose(item));
+    item.removeEventListener('click', overlayClose);
+    document.removeEventListener('keydown',escClose);
     };
-
-
 
 function overlayClose(evt){
     if (evt.target === evt.currentTarget) {
-    closeModal();
+    closeModal(document.querySelector('.popup_is-opened'));
    }
 };
 
 function escClose(evt){ 
-        if(evt.key === 'escape' || evt.key === '27'){
-            closeModal();
+        if(evt.key === 'Escape' || evt.key === '27'){
+        closeModal(document.querySelector('.popup_is-opened'));
         }
 };
 
