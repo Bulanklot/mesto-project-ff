@@ -1,0 +1,14 @@
+.card__like-button-score {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 15.73px;
+  color: rgba(0, 0, 0, 1);
+}
+.card__like {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 3px;
+}
