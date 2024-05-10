@@ -1,5 +1,5 @@
-import {cardTemplate, cardsContainer, popupImage, showImage, removeMyCard, pushLike, removeLike, cardLikeCheck} from "../index.js";
-
+import {cardTemplate, cardsContainer, popupImage, showImage} from "../index.js";
+import {removeMyCard, pushLike, removeLike, errorCheck} from './api.js';
 function createCard(card, deleteCard, setLike, showImage, myId){
     const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardItem.querySelector('.card__image');
@@ -23,7 +23,7 @@ function createCard(card, deleteCard, setLike, showImage, myId){
         .then((response)=>{
           if(response.ok){
           deleteCard(cardItem);
-          }})
+          }}).catch(errorCheck);
       });
     const cardLikeButton = cardItem.querySelector('.card__like-button');
 
@@ -37,14 +37,13 @@ function createCard(card, deleteCard, setLike, showImage, myId){
         .then((response)=>{
           cardLikeScore.textContent = response.likes.length;
           setLike(cardLikeButton);
-        })} else {
+        }).catch(errorCheck)} else {
           removeLike(cardId)
           .then((response)=>{
             cardLikeScore.textContent = response.likes.length;
           setLike(cardLikeButton);
-          })
+          }).catch(errorCheck);
         }
-       //setLike(cardLikeButton);
     });
     cardImage.addEventListener('click', function(){
         showImage(card)});
