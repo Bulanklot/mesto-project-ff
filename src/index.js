@@ -53,7 +53,7 @@ export const jobInput = document.querySelector('.popup__input_type_description')
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
-function SubmitEditForm(evt) {
+function submitEditForm(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
                                                 // Так мы можем определить свою логику отправки.
                                                 // О том, как это делать, расскажем позже.
@@ -74,7 +74,7 @@ function SubmitEditForm(evt) {
 
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formElementEdit.addEventListener('submit', SubmitEditForm); 
+formElementEdit.addEventListener('submit', submitEditForm); 
 
 
 const formElementNewCard = document.querySelector('.popup__form__new-card');
