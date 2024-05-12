@@ -1,5 +1,7 @@
-import {cardTemplate, cardsContainer, popupImage, showImage} from "../index.js";
 import {removeMyCard, pushLike, removeLike, errorCheck} from './api.js';
+
+const cardTemplate = document.querySelector('#card-template').content;
+
 function createCard(card, deleteCard, setLike, showImage, myId){
     const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardItem.querySelector('.card__image');
@@ -20,10 +22,9 @@ function createCard(card, deleteCard, setLike, showImage, myId){
 
     deleteCardButton.addEventListener('click', function(){
         removeMyCard(cardId)
-        .then((response)=>{
-          if(response.ok){
+        .then(()=>{
           deleteCard(cardItem);
-          }}).catch(errorCheck);
+          }).catch(errorCheck);
       });
     const cardLikeButton = cardItem.querySelector('.card__like-button');
 

@@ -15,24 +15,25 @@ const addButton = document.querySelector('.profile__add-button');
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupAdd = document.querySelector('.popup_type_new-card');
 const popupCloseButtons = document.querySelectorAll('.popup__close');
-export const cardTemplate = document.querySelector('#card-template').content;
 export const cardsContainer = document.querySelector('.places__list');
 export const popupImage = document.querySelector('.popup_type_image');
+const  cardPopupImage = document.querySelector('.popup__image');
+const  captionPopupImage = document.querySelector('.popup__caption');
+const profileTitle = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+
 
 
 editButton.addEventListener('click',function() {
     const editForm = document.forms.editprofile;
-    editForm.elements.name.value = document.querySelector('.profile__title').textContent;
-    editForm.elements.description.value = document.querySelector('.profile__description').textContent;
-    formElementEdit.querySelector('.popup__button').textContent = 'Сохранить';
+    editForm.elements.name.value = profileTitle.textContent;
+    editForm.elements.description.value = profileDescription.textContent;
     openModal(popupEdit);
     clearValidation(editForm, validationConfig);
   });
 
 addButton.addEventListener('click',() => {
-  formElementNewCard.querySelector('.popup__button').textContent = 'Сохранить';
   openModal(popupAdd);
-  formElementNewCard.reset();
   clearValidation(formElementNewCard, validationConfig);
   });
 
@@ -52,7 +53,7 @@ export const jobInput = document.querySelector('.popup__input_type_description')
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
-function editFormSubmit(evt) {
+function SubmitEditForm(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
                                                 // Так мы можем определить свою логику отправки.
                                                 // О том, как это делать, расскажем позже.
@@ -60,55 +61,52 @@ function editFormSubmit(evt) {
     name: nameInput.value, 
     about: jobInput.value // Получите значение полей jobInput и nameInput из свойства value
     };
-
-    const title = document.querySelector('.profile__title');
-    const description = document.querySelector('.profile__description');// Выберите элементы, куда должны быть вставлены значения полей
-    
+    evt.submitter.textContent = 'Сохранение...';
     editDataProfile(profileInfoData)
     .then((data) => {
-    title.textContent = data.name;
-    description.textContent = data.about;
-    })
-    .catch(errorCheck);
-    formElementEdit.querySelector('.popup__button').textContent = 'Сохранение...';      
-   // title.textContent = nameInput.value;
-   // description.textContent = jobInput.value;// Вставьте новые значения с помощью textContent
+    profileTitle.textContent = data.name;
+    profileDescription.textContent = data.about;
     closeModal(popupEdit);
+    })
+    .catch(errorCheck)
+    .finally(() => {evt.submitter.textContent = 'Сохранить'});
 };
 
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formElementEdit.addEventListener('submit', editFormSubmit); 
+formElementEdit.addEventListener('submit', SubmitEditForm); 
 
 
 const formElementNewCard = document.querySelector('.popup__form__new-card');
 const cardName = document.querySelector('.popup__input_type_card-name');
 const cardLink = document.querySelector('.popup__input_type_url');
 
-function newCardFormSubmit(evt){
+function submitNewCardForm(evt){
     evt.preventDefault();
     const card = {
         name : cardName.value,
         link : cardLink.value
     };
+    evt.submitter.textContent = 'Сохранение...';
     addNewCard(card)
     .then((data)=>{
-      const cardElement = createCard(data, deleteCard, setLike, showImage);
+      const myId = data.owner._id;
+      const cardElement = createCard(data, deleteCard, setLike, showImage,myId);
       cardsContainer.prepend(cardElement);
+      formElementNewCard.reset();
+      closeModal(popupAdd);
     })
-    .catch(errorCheck);
-    const popupSubmitButton = formElementNewCard.querySelector('.popup__button');
-    popupSubmitButton.textContent = 'Сохранение...';
-    formElementNewCard.reset();
-    closeModal(popupAdd);
+    .catch(errorCheck)
+    .finally(() => {evt.submitter.textContent = 'Сохранить'}); 
 };
 
-formElementNewCard.addEventListener('submit', newCardFormSubmit);
+formElementNewCard.addEventListener('submit', submitNewCardForm);
+
 
 export function showImage(card){
-    document.querySelector('.popup__image').src = card.link;
-    document.querySelector('.popup__image').alt = card.name;
-    document.querySelector('.popup__caption').textContent = card.name;
+    cardPopupImage.src = card.link;
+    cardPopupImage.alt = card.name;
+    captionPopupImage.textContent = card.name;
     openModal(popupImage);
   };
 
@@ -119,28 +117,27 @@ const popupAvatar = document.querySelector('.popup_type_avatar');
 const formElementAvatar = document.querySelector('.popup__form-avatar');
 const avatarLinkInput = document.querySelector('.popup__input_type_url-avatar');
 
-function newAvatarFormSubmit(evt){
+function submitNewAvatarForm(evt){
   evt.preventDefault();
+  evt.submitter.textContent = 'Сохранение...';
   const avatarValue =  avatarLinkInput.value;
   changeAvatar(avatarValue)
   .then((response)=>{
     profileImage.style.backgroundImage = `url(${response.avatar})`;
+    closeModal(popupAvatar);
+    formElementAvatar.reset();
   })
-  .catch(errorCheck);
-  const popupSubmitButton = formElementAvatar.querySelector('.popup__button');
-  popupSubmitButton.textContent = 'Сохранение...';
-  closeModal(popupAvatar);
+  .catch(errorCheck)
+  .finally(() => {evt.submitter.textContent = 'Сохранить'});
 }
 
 profileImage.addEventListener('click',function(){
-  formElementAvatar.reset();
-  formElementAvatar.querySelector('.popup__button').textContent = 'Сохранить';
   clearValidation(formElementAvatar, validationConfig);
   openModal(popupAvatar);
   }
 );
 
-formElementAvatar.addEventListener('submit', newAvatarFormSubmit);
+formElementAvatar.addEventListener('submit', submitNewAvatarForm);
 
   //VALIDATION
   enableValidation(validationConfig);
@@ -150,13 +147,12 @@ formElementAvatar.addEventListener('submit', newAvatarFormSubmit);
 
 Promise.all([getUserInfo(),getInitialCards()])
 .then( ([userdata, cardsdata]) => {
-    document.querySelector('.profile__title').textContent = userdata.name;
-    document.querySelector('.profile__description').textContent = userdata.about;
-    document.querySelector('.profile__image').style.backgroundImage = `url(${userdata.avatar})`;
+    profileTitle.textContent = userdata.name;
+    profileDescription.textContent = userdata.about;
+    profileImage.style.backgroundImage = `url(${userdata.avatar})`;
     const myId = userdata._id;
 
     cardsdata.forEach((element)=>{
-     // console.log(element);
       const cardElement = createCard(element, deleteCard, setLike, showImage, myId);
       cardsContainer.append(cardElement);
   });

@@ -8,9 +8,9 @@ export const apiConfig = {
 export  const handleResponse = (response) =>{
     if(response.ok){
       return response.json();
-    }
-
+    }else{
     return Promise.reject(`Ошибка: ${response.status}`);
+     }
    };
 
 // выводим ошибку в консоль
@@ -20,7 +20,7 @@ export const errorCheck = (err) => {
   }; 
 
     // Загрузка информации о пользователе с сервера
-    
+
 export  const getUserInfo = ()=> {
     return fetch(`${apiConfig.url}/users/me`, 
   { method: 'GET',
@@ -83,7 +83,7 @@ export const removeMyCard = (cardId) => {
         authorization: apiConfig.token,
         'Content-Type': 'application/json'
       }
-    })
+    }).then(handleResponse)
   };
   
   

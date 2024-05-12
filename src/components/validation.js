@@ -37,7 +37,7 @@ const checkInputValidity = (formElement, inputElement, validationConfig) => {
 
 const setEventListeners = (formElement, validationConfig) => {
  const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
- const buttonElement = formElement.querySelector('.popup__button');
+ const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
  toggleButtonState(inputList,buttonElement,validationConfig);
  inputList.forEach((inputElement) =>{
   inputElement.addEventListener('input', function(){
@@ -53,7 +53,7 @@ export const enableValidation = (config) => {
     formElement.addEventListener('submit', function(evt){
       evt.preventDefault();
     });
-    setEventListeners(formElement, validationConfig);
+    setEventListeners(formElement, config);
   });
 };
 
